@@ -2,3 +2,4 @@ build/part_*.mp4
 build/parts.txt
 build/stills/
 build/soundtrack.wav
+build/render.log
