@@ -304,7 +304,7 @@ const spin = (target, deg, t0 = 0, t1 = TOT, svg = false) => tl.fromTo(target, {
 const draw = (path, t, dur, len) => { len = len || path.getTotalLength(); gsap.set(path, { strokeDasharray: len, strokeDashoffset: len }); tl.to(path, { strokeDashoffset: 0, duration: dur, ease: 'power2.inOut' }, t); };
 
 const W = {
-  s0: [0, 14.0], s1: [14.0, K(2) - .35], s2: [K(2) - .35, K(8) - .3], s3: [K(8) - .3, K(13) - .25], s4: [K(13) - .25, K(22) - .3],
+  s0: [0, TL.titleT], s1: [TL.titleT, K(2) - .35], s2: [K(2) - .35, K(8) - .3], s3: [K(8) - .3, K(13) - .25], s4: [K(13) - .25, K(22) - .3],
   s5: [K(22) - .3, K(29) - .3], s6: [K(29) - .3, KE(33) + .25], s6b: [KE(33) + .25, K(37) - .35], s7: [K(37) - .35, K(43) - .3],
   s8: [K(43) - .3, K(50) - .3], s9: [K(50) - .3, K(58) - .3], s10: [K(58) - .3, K(62) - .3], s11: [K(62) - .3, KE(65) + .6], s12: [KE(65) + .6, TOT + 1],
 };
@@ -354,21 +354,23 @@ $$('[data-ring]').forEach((r, i) => spin(r, i % 2 ? -36 : 48));
   tl.fromTo('#introLines circle', { autoAlpha: 0 }, { autoAlpha: 1, duration: .3, stagger: .05 }, 1.2);
   tl.fromTo('#medal', { autoAlpha: 0, scale: .45, rotation: -25 }, { autoAlpha: 1, scale: 1, rotation: 0, duration: 1.0, ease: 'back.out(1.5)' }, 2.2);
   tl.fromTo('#medalBurst', { autoAlpha: .95, scale: .85 }, { autoAlpha: 0, scale: 1.95, duration: 1.1, ease: 'power2.out' }, 2.45);
-  pop($$('#i1 .w'), 2.85, { st: .16, y: 30 });
-  out('#i1', 6.35, { y: -30 });
-  pop($$('#i2 .w'), 6.55, { st: .12, y: 30 });
-  pop('#i3', 10.15, { s: .92, d: .8, e: 'power3.out' });
-  pop('#i4', 11.7, { y: 14 });
+  const IN = TL.intro;
+  pop($$('#i1 .w'), IN[0][0] - .05, { st: .16, y: 30 });
+  out('#i1', IN[1][0] - .35, { y: -30 });
+  pop($$('#i2 .w'), IN[1][0] - .15, { st: .12, y: 30 });
+  pop('#i3', IN[2][0] - .1, { s: .92, d: .8, e: 'power3.out' });
+  pop('#i4', Math.min(IN[2][1] + .2, TL.titleT - 1.6), { y: 14 });
 })();
 
 // ---------------------------------------------------------------- S1 title
-pop('#titleCore', 14.05, { s: .5, d: .9 });
-pop('#tMk', 14.35, { x: 70, y: 0, d: .8, e: 'power3.out' });
-pop('#tAi', 14.75, { x: -70, y: 0, s: 1.25, d: .8, e: 'power3.out' });
-tl.fromTo('#tDiv', { autoAlpha: 0, scaleX: 0 }, { autoAlpha: 1, scaleX: 1, duration: .8 }, 15.4);
-pop('#tSub', 15.7, { y: 20 });
+const T1 = TL.titleT;
+pop('#titleCore', T1 + .05, { s: .5, d: .9 });
+pop('#tMk', T1 + .35, { x: 70, y: 0, d: .8, e: 'power3.out' });
+pop('#tAi', T1 + .75, { x: -70, y: 0, s: 1.25, d: .8, e: 'power3.out' });
+tl.fromTo('#tDiv', { autoAlpha: 0, scaleX: 0 }, { autoAlpha: 1, scaleX: 1, duration: .8 }, T1 + 1.4);
+pop('#tSub', T1 + 1.7, { y: 20 });
 pop($$('#tChips .pill'), K(1) + .3, { st: .4, y: 24 });
-loop('#tAi', { scale: 1.05 }, 16.2, W.s1[1] - .5, 2.2);
+loop('#tAi', { scale: 1.05 }, T1 + 2.2, W.s1[1] - .5, 2.2);
 
 // ---------------------------------------------------------------- S2 challenges
 (function () {
@@ -511,7 +513,7 @@ loop('#tAi', { scale: 1.05 }, 16.2, W.s1[1] - .5, 2.2);
   pop('#npanel', K(35) - .15, { s: .8, y: 30, to: '0% 100%', d: .6 });
   const slots = { '#n2': 0, '#n3': 110, '#n1': 220 };
   ['#n2', '#n3', '#n1'].forEach((id, i) => { gsap.set(id, { top: slots[id] + 'px' }); pop(id, K(35) + .3 + i * .35, { x: 40, y: 0, d: .45 }); });
-  const sortT = TL.s23.start + (11.78 - TL.s23.recA) - .35;
+  const sortT = TL.sortT;
   tl.fromTo('#sortFx', { autoAlpha: 0 }, { autoAlpha: 1, duration: .25, yoyo: true, repeat: 1 }, sortT - .2);
   tl.to('#n1', { top: '0px', duration: .85, ease: 'power3.inOut' }, sortT);
   tl.to('#n2', { top: '110px', duration: .85, ease: 'power3.inOut' }, sortT);
@@ -622,7 +624,7 @@ loop('#tAi', { scale: 1.05 }, 16.2, W.s1[1] - .5, 2.2);
   tl.fromTo('#veil', { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.0, ease: 'power1.in' }, TOT - 1.0);
 })();
 
-tl.fromTo(['#brand', '#progress'], { autoAlpha: 0, y: -20 }, { autoAlpha: 1, y: 0, duration: .6 }, 14.2);
+tl.fromTo(['#brand', '#progress'], { autoAlpha: 0, y: -20 }, { autoAlpha: 1, y: 0, duration: .6 }, TL.titleT + .2);
 
 // ---------------------------------------------------------------- per-frame dynamic state
 const cap = $('#cap');

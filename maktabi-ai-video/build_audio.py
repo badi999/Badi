@@ -97,8 +97,9 @@ def main():
         # Generated narration (same voice as the original narrator): one clip per sentence.
         vj = json.load(open(A("build", "voices.json")))
         gchain = "highpass=f=110:poles=2,lowpass=f=11000:poles=2,acompressor=threshold=-24dB:ratio=2:attack=6:release=90"
-        intro = [load_clip(A(c["file"]), gchain) for c in vj["intro"]]
-        gap = [load_clip(A(c["file"]), gchain) for c in vj["gap"]]
+        lc = lambda c: decode(A(c["file"]), 1, gchain)[:, 0] if c.get("trimmed") else load_clip(A(c["file"]), gchain)
+        intro = [lc(c) for c in vj["intro"]]
+        gap = [lc(c) for c in vj["gap"]]
         allv = np.concatenate(intro + gap)
         g = 10 ** ((target - rms_db(allv)) / 20)
         intro = [c * g for c in intro]; gap = [c * g for c in gap]
@@ -193,7 +194,12 @@ def main():
     if gen:
         t = INTRO_T0
         for k, c in enumerate(intro):
-            put(c, t); intro_spans.append([t, t + len(c) / SR])
+            put(c, t)
+            sp = vj["intro"][k].get("split")          # one clip can hold two on-screen lines
+            if sp:
+                intro_spans += [[t, t + sp], [t + sp, t + len(c) / SR]]
+            else:
+                intro_spans.append([t, t + len(c) / SR])
             t += len(c) / SR + (pauses[k] if k < len(pauses) else 0)
         for c, key in zip(gap, ("s1", "s2", "s3")):
             put(c, spans[key][0])

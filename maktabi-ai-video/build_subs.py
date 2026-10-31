@@ -83,11 +83,10 @@ def main():
     subs = []
     for i, (txt, (a, b)) in enumerate(zip(TEXTS, times)):
         subs.append({"i": i, "text": txt, "start": round(m(a), 2), "end": round(m(b), 2), "orig": [a, b]})
-    # the gap sentences now follow the newly recorded voice
-    s1 = tl["s1"]["start"] - tl["s1"]["recA"]; s23 = tl["s23"]["start"] - tl["s23"]["recA"]
-    subs[34].update(start=round(s1 + 1.85, 2), end=round(s1 + 7.35, 2))
-    subs[35].update(start=round(s23 + 7.80, 2), end=round(s23 + 14.40, 2))
-    subs[36].update(start=round(s23 + 14.50, 2), end=round(s23 + 18.95, 2))
+    # the gap sentences follow the narration inserted at ~2:12 (spans from build_audio.py)
+    for k, key in ((34, "s1"), (35, "s2"), (36, "s3")):
+        a, b = tl["gap"][key]
+        subs[k].update(start=round(a - .1, 2), end=round(b + .15, 2))
     # line that the source video showed higher on screen (missed by the subtitle scan)
     sec = {"i": "37a", "text": "ويظل أمن المعلومات شرطًا أساسيًا لنجاح المشروع",
            "start": round(m(142.45), 2), "end": round(m(147.0), 2), "orig": [142.45, 147.0]}
@@ -99,9 +98,8 @@ def main():
         h = int(t // 3600); mnt = int(t % 3600 // 60); sec_ = t % 60
         return f"{h:02d}:{mnt:02d}:{int(sec_):02d},{int(round((sec_ % 1) * 1000)) % 1000:03d}"
     lines = []
-    intro = [("في ظل الثورة الرقمية للذكاء الاصطناعي", 2.9, 5.9),
-             ("نقدم لكم عرضًا مقترحًا في مجال الذكاء الاصطناعي", 6.6, 10.3),
-             ("لوزارة الأوقاف والشؤون الدينية", 10.3, 13.3)]
+    it = ["في ظل الثورة الرقمية للذكاء الاصطناعي", "نقدم لكم عرضًا مقترحًا في مجال الذكاء الاصطناعي", "لوزارة الأوقاف والشؤون الدينية"]
+    intro = [(t, round(a - .1, 2), round(b + .2, 2)) for t, (a, b) in zip(it, tl["intro"])]
     allsubs = [{"text": t, "start": a, "end": b} for t, a, b in intro] + subs
     for n, s in enumerate(allsubs, 1):
         lines += [str(n), f"{ts(s['start'])} --> {ts(s['end'])}", s["text"], ""]
