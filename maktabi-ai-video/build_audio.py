@@ -79,28 +79,54 @@ def rms_db(x):
     return 20 * np.log10(np.sqrt(np.mean(x ** 2)) + 1e-12)
 
 
+def load_clip(path, vchain=None):
+    x = decode(path, 1, vchain)[:, 0]
+    # trim silence (keep 40 ms margins)
+    env = np.convolve(np.abs(x), np.ones(441) / 441, mode="same")
+    thr = max(env.max() * 0.04, 1e-4)
+    idx = np.where(env > thr)[0]
+    a, b = max(0, idx[0] - int(.04 * SR)), min(len(x), idx[-1] + int(.06 * SR))
+    return x[a:b]
+
+
 def main():
     orig = decode(A("assets", "original-audio.m4a"), 2)
-    # Voice chain: match the original narration (high-passed, brighter presence,
-    # codec band-limit), denoise the phone recording, gentle compression.
-    vchain = ("highpass=f=120:poles=2,highpass=f=110:poles=2,afftdn=nf=-42,"
-              "equalizer=f=320:t=q:w=1.1:g=-2.5,equalizer=f=2100:t=q:w=0.9:g=5,"
-              "equalizer=f=6500:t=q:w=1.2:g=2,lowpass=f=10000:poles=2,"
-              "acompressor=threshold=-26dB:ratio=2.5:attack=6:release=90")
-    # voice-matched versions from prep_voices.py when available (same timing as the originals)
-    vsrc = lambda n: A("build", n + "-conv.wav") if os.path.exists(A("build", n + "-conv.wav")) else A("assets", n + ".m4a")
-    v1 = decode(vsrc("voice-intro"), 1, vchain)[:, 0]
-    v2 = decode(vsrc("voice-2m12"), 1, vchain)[:, 0]
+    target = -19.7  # original narration ≈ -19.7 dBFS RMS (voice only, during speech)
+    gen = os.path.exists(A("build", "voices.json"))
+    if gen:
+        # Generated narration (same voice as the original narrator): one clip per sentence.
+        vj = json.load(open(A("build", "voices.json")))
+        gchain = "highpass=f=110:poles=2,lowpass=f=11000:poles=2,acompressor=threshold=-24dB:ratio=2:attack=6:release=90"
+        intro = [load_clip(A(c["file"]), gchain) for c in vj["intro"]]
+        gap = [load_clip(A(c["file"]), gchain) for c in vj["gap"]]
+        allv = np.concatenate(intro + gap)
+        g = 10 ** ((target - rms_db(allv)) / 20)
+        intro = [c * g for c in intro]; gap = [c * g for c in gap]
+        pauses = vj.get("intro_pauses", [0.45, 0.3])
+        ilen = sum(len(c) for c in intro) / SR + sum(pauses)
+    else:
+        # Recorded voices (voice-matched by prep_voices.py when available).
+        vchain = ("highpass=f=120:poles=2,highpass=f=110:poles=2,afftdn=nf=-42,"
+                  "equalizer=f=320:t=q:w=1.1:g=-2.5,equalizer=f=2100:t=q:w=0.9:g=5,"
+                  "equalizer=f=6500:t=q:w=1.2:g=2,lowpass=f=10000:poles=2,"
+                  "acompressor=threshold=-26dB:ratio=2.5:attack=6:release=90")
+        vsrc = lambda n: A("build", n + "-conv.wav") if os.path.exists(A("build", n + "-conv.wav")) else A("assets", n + ".m4a")
+        v1 = decode(vsrc("voice-intro"), 1, vchain)[:, 0]
+        v2 = decode(vsrc("voice-2m12"), 1, vchain)[:, 0]
+        v1 *= 10 ** ((target - rms_db(sl(v1, 1.1, 11.2))) / 20)
+        v2 *= 10 ** ((target - rms_db(sl(v2, 1.9, 18.7))) / 20)
+        ilen = 10.1
 
-    # Loudness: original narration ≈ -19.7 dBFS RMS (voice only, during speech).
-    target = -19.7
-    v1 *= 10 ** ((target - rms_db(sl(v1, 1.1, 11.2))) / 20)
-    v2 *= 10 ** ((target - rms_db(sl(v2, 1.9, 18.7))) / 20)
-    st = lambda m: np.repeat(m[:, None], 2, axis=1)
-
+    INTRO_T0 = 2.9                      # first word of the intro voice (after the logo "whoosh")
     tr = Track()
-    # --- Intro: stretch the music-only intro by 3.0 s (orig 0..9.4 then orig 6.0..)
+    # --- Intro: music-only intro, stretched so the intro voice ends ≥0.75 s before «ومن هنا…» (orig 11.1)
+    extra = max(3.0, INTRO_T0 + ilen + 0.75 - 11.1) - 3.0   # seconds beyond the standard 3.0 s stretch
     tr.piece(orig, 0.0, 9.4)
+    if extra > 0.02:
+        PADI, XI = (6.0, 9.4), 0.4
+        n = int(np.ceil(extra / (PADI[1] - PADI[0] - XI)))
+        for _ in range(n):
+            tr.piece(orig, PADI[0], PADI[0] + extra / n + XI, xf=XI)
     tr.piece(orig, 6.0, 131.10, xf=0.4)
     D1 = tr.marks[-1][0] - 6.0  # offset for orig >= ~9
     G = 130.25 + D1  # new time where the original narration falls silent
@@ -120,17 +146,27 @@ def main():
         for _ in range(n):
             tr.piece(orig, PAD[0], PAD[0] + each)
 
-    # chime piece (three notification dings at orig 131.25 / 131.95 / 132.6) starts at G+5.95
-    fill_to(G + 5.95 + XF)
-    tr.piece(orig, 131.10, 133.90)
+    s1_len = len(gap[0]) / SR if gen else 7.25 - 1.75
+    chime_start = max(G + 5.95, G + 0.35 + s1_len + 0.2 - 0.15)
+    fill_to(chime_start + XF)
+    tr.piece(orig, 131.10, 133.90)   # three notification dings at orig 131.25 / 131.95 / 132.6
     chime_new = tr.marks[-1][0] + (131.25 - 131.10)
 
-    s1 = (1.75, 7.40)    # «ويمكن للمساعد تنبيه الموظف عبر جرس إشعارات على شريط المهام»
-    s23 = (7.65, 19.00)  # «يعرض الرسائل… حسب الأولوية» + «مع إبرازها على سطح المكتب لمتابعتها أولًا بأول»
-    s1_new = chime_new - 0.20 - (7.25 - s1[0])  # sentence ends ~0.2 s before the first ding
-    s23_new = chime_new + 1.40                   # starts with the third ding
-    s23_end = s23_new + (18.75 - s23[0])
-    resume_new = s23_end + 0.75                  # orig 142.0 lands here (next voice at 142.34)
+    if gen:
+        s1_new = chime_new - 0.20 - len(gap[0]) / SR
+        s2_new = chime_new + 1.40
+        s3_new = s2_new + len(gap[1]) / SR + 0.35
+        s3_end = s3_new + len(gap[2]) / SR
+        spans = {"s1": [s1_new, s1_new + len(gap[0]) / SR], "s2": [s2_new, s2_new + len(gap[1]) / SR], "s3": [s3_new, s3_end]}
+        sortT = s2_new + vj.get("sort_word", 0.62) * len(gap[1]) / SR - .35
+    else:
+        s1 = (1.75, 7.40); s23 = (7.65, 19.00)
+        s1_new = chime_new - 0.20 - (7.25 - s1[0])
+        s23_new = chime_new + 1.40
+        s3_end = s23_new + (18.75 - s23[0])
+        spans = {"s1": [s1_new + .1, s1_new + 5.6], "s2": [s23_new + .15, s23_new + 6.75], "s3": [s23_new + 6.85, s3_end + .2]}
+        sortT = s23_new + (11.78 - s23[0]) - .35
+    resume_new = s3_end + 0.75                  # orig 142.0 lands here (next voice at 142.34)
 
     tail_piece = (139.95, 142.0)
     fill_to(resume_new - (tail_piece[1] - tail_piece[0]) + XF)
@@ -143,26 +179,31 @@ def main():
     tr.piece(orig, 240.2, 241.92, xf=0.3)
     D3 = tr.marks[-1][0] - 240.2
     mix = tr.buf.copy()
-    # final gentle fade
-    mix = fade(mix, 0.0, 1.6)
-    total = len(mix) / SR
+    mix = fade(mix, 0.0, 1.6)  # final gentle fade
 
-    # --- place the voices
-    def place(sig, rec_a, rec_b, new_t):
+    def put(x, new_t):
         nonlocal mix
-        seg = fade(sl(sig, rec_a, rec_b)[:, None], 0.04, 0.12)
-        x = np.repeat(seg, 2, axis=1)
-        i = int(round(new_t * SR))
-        end = i + len(x)
+        x = np.repeat(fade(x[:, None], 0.02, 0.06), 2, axis=1)
+        i = int(round(new_t * SR)); end = i + len(x)
         if end > len(mix):
             mix = np.vstack([mix, np.zeros((end - len(mix), 2))])
         mix[i:end] += x
 
-    # intro voice: rec 1.1 s (speech onset) lands at new 2.9 s
-    v1_new = 2.9 - (1.1 - 0.95)
-    place(v1, 0.95, 11.75, v1_new)
-    place(v2, s1[0], s1[1], s1_new)
-    place(v2, s23[0], s23[1], s23_new)
+    intro_spans = []
+    if gen:
+        t = INTRO_T0
+        for k, c in enumerate(intro):
+            put(c, t); intro_spans.append([t, t + len(c) / SR])
+            t += len(c) / SR + (pauses[k] if k < len(pauses) else 0)
+        for c, key in zip(gap, ("s1", "s2", "s3")):
+            put(c, spans[key][0])
+    else:
+        v1_new = INTRO_T0 - (1.1 - 0.95)
+        put(sl(v1, 0.95, 11.75), v1_new)
+        put(sl(v2, s1[0], s1[1]), s1_new)
+        put(sl(v2, s23[0], s23[1]), s23_new)
+        r = v1_new - 0.95
+        intro_spans = [[r + 1.1, r + 3.9], [r + 4.9, r + 8.46], [r + 8.46, r + 11.2]]
 
     peak = np.abs(mix).max()
     if peak > 0.98:
@@ -175,11 +216,13 @@ def main():
     tl = {
         "duration": len(mix) / SR,
         "D1": D1, "G": G, "D2": D2, "D3": D3,
+        "titleT": 11.0 + D1,             # «ومن هنا تأتي فكرة مكتبي AI» scene start
         "resume": resume_actual,
         "chime": chime_new,
-        "v1": {"recToNew": v1_new - 0.95},
-        "s1": {"start": s1_new, "recA": s1[0]},
-        "s23": {"start": s23_new, "recA": s23[0]},
+        "intro": intro_spans,
+        "gap": spans,
+        "sortT": sortT,
+        "generated": gen,
         "marks": tr.marks,
     }
     json.dump(tl, open(A("build", "timeline.json"), "w"), indent=1)
