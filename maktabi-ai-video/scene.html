@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>مكتبي AI — عرض مرئي</title>
+<link rel="stylesheet" href="scene.css">
+</head>
+<body>
+<div id="stage">
+  <!-- ======= background: user theme + AI layer ======= -->
+  <div id="bg"></div>
+  <div id="bgTint" class="layer"></div>
+  <svg id="aiSvg" class="layer" viewBox="0 0 1920 1080"></svg>
+  <canvas id="particles" width="1920" height="1080"></canvas>
+
+  <!-- ======= chrome ======= -->
+  <div id="brand"><div class="mini" data-core="mini"></div><div><div class="t1">مكتبي<b>AI</b></div><div class="t2">عرض مقترح · وزارة الأوقاف والشؤون الدينية</div></div></div>
+  <div id="progress"></div>
+
+  <!-- ======= S0 intro ======= -->
+  <div class="scene" id="s0">
+    <svg class="abs" id="introLines" style="left:0;top:0;width:1920px;height:1080px" viewBox="0 0 1920 1080"></svg>
+    <div class="abs" id="medal" style="left:810px;top:180px;width:300px;height:300px">
+      <div class="abs" id="medalRing3" style="inset:-70px" data-ring="ticks"></div>
+      <div class="abs" id="medalRing2" style="inset:-40px" data-ring="dash"></div>
+      <div class="abs" id="medalBurst" style="inset:-10px;border-radius:50%;border:3px solid rgba(227,196,126,.9);opacity:0"></div>
+      <div class="abs" style="inset:0;border-radius:50%;background:radial-gradient(circle at 50% 40%,#13705e,#0a4140 70%,#082f35);box-shadow:0 0 0 4px rgba(227,196,126,.85),0 0 0 10px rgba(255,255,255,.55),0 30px 60px -20px rgba(4,40,50,.6),0 0 70px 10px rgba(47,198,220,.25)"></div>
+      <img src="assets/emblem-gold.png" class="abs" style="left:50%;top:50%;width:200px;transform:translate(-50%,-50%)">
+    </div>
+    <div class="abs" id="i1" style="top:560px;left:0;right:0;text-align:center;font:700 60px 'Readex'">
+      <span class="w">في</span> <span class="w">ظلّ</span> <span class="w acc">الثورة</span> <span class="w acc">الرقمية</span> <span class="w gold">للذكاء</span> <span class="w gold">الاصطناعي</span>
+    </div>
+    <div class="abs" id="i2" style="top:560px;left:0;right:0;text-align:center;font:600 52px 'Readex';color:var(--ink2)">
+      <span class="w">نقدّم</span> <span class="w">لكم</span> <span class="w">عرضًا</span> <span class="w">مقترحًا</span> <span class="w">في</span> <span class="w">مجال</span>
+      <span class="w" style="font:800 40px 'Orbitron';color:#fff;background:linear-gradient(135deg,#d6b25e,#a77d26);padding:4px 14px 2px;border-radius:12px;vertical-align:6px;box-shadow:0 0 22px rgba(227,196,126,.8)">AI</span>
+    </div>
+    <div class="abs" id="i3" style="top:650px;left:0;right:0;text-align:center;font:700 74px 'Readex'"><span class="acc">لوزارة الأوقاف والشؤون الدينية</span></div>
+    <div class="abs cr-line" id="i4" style="top:780px;left:0;right:0;font:600 24px 'Plex';color:var(--ink3)">عرض مقترح · <span style="font-family:Orbitron;font-weight:700;color:var(--gold)">مكتبي AI</span></div>
+  </div>
+
+  <!-- ======= S1 title ======= -->
+  <div class="scene" id="s1">
+    <div class="core" id="titleCore" data-core="big" style="left:820px;top:130px;width:280px;height:280px"></div>
+    <div class="abs" id="tMain" style="top:418px;left:0;right:0;text-align:center;font:700 150px/1.2 'Readex';color:var(--ink)">
+      <span id="tMk" class="w">مكتبي</span>&nbsp;<span id="tAi" class="w" style="font:900 136px 'Orbitron';background:linear-gradient(180deg,#f0d58f,#c39a3d 55%,#9c7220);-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgba(227,196,126,.55))">AI</span>
+    </div>
+    <div class="abs" id="tDiv" style="top:640px;left:660px;width:600px;height:20px">
+      <svg viewBox="0 0 600 20" style="width:600px;height:20px"><defs><linearGradient id="dg" x1="0" x2="1"><stop offset="0" stop-color="#c39a3d" stop-opacity="0"/><stop offset=".5" stop-color="#c39a3d"/><stop offset="1" stop-color="#c39a3d" stop-opacity="0"/></linearGradient></defs><line x1="0" y1="10" x2="600" y2="10" stroke="url(#dg)" stroke-width="2"/><rect x="292" y="2" width="16" height="16" transform="rotate(45 300 10)" fill="#e3c47e" stroke="#fff" stroke-width="2"/></svg>
+    </div>
+    <div class="abs" id="tSub" style="top:672px;left:0;right:0;text-align:center;font:600 48px 'Readex';color:var(--ink2)">المساعد الذكي <span class="acc">للأعمال الحكومية</span></div>
+    <div class="abs" id="tChips" style="top:792px;left:0;right:0;display:flex;justify-content:center;gap:22px">
+      <div class="pill" style="position:relative" data-k="0"><span data-icon="doc"></span>مقترح مدروس</div>
+      <div class="pill dark" style="position:relative" data-k="1"><span data-icon="sparkle"></span>مساعد ذكي</div>
+      <div class="pill" style="position:relative" data-k="2"><span data-icon="building"></span>ضمن بيئة العمل الحكومية</div>
+    </div>
+  </div>
+
+  <!-- ======= S2 challenges ======= -->
+  <div class="scene" id="s2">
+    <div class="sec"><span class="n">02</span><span class="l">التحديات الحالية</span></div>
+    <div class="h2"><span class="acc">تحديات</span> العمل اليومي</div>
+    <div class="abs" id="docs" style="left:300px;top:225px;width:600px;height:560px"></div>
+    <div class="abs" id="scanBeam" style="left:300px;top:225px;width:600px;height:70px;opacity:0;background:linear-gradient(180deg,rgba(47,198,220,0),rgba(47,198,220,.45),rgba(47,198,220,0));border-top:2px solid rgba(47,198,220,.0)"></div>
+    <div class="card glass" id="c1" style="right:300px;top:250px;width:670px;height:98px"><span class="ic" data-icon="layers"></span><div class="tt">تعدد المراسلات والوثائق</div></div>
+    <div class="card glass" id="c2" style="right:300px;top:368px;width:670px;height:98px"><span class="ic" data-icon="clock"></span><div class="tt">الوقت المستغرق في البحث</div></div>
+    <div class="card glass" id="c3" style="right:300px;top:486px;width:670px;height:98px"><span class="ic" data-icon="list"></span><div class="tt">مراجعة تاريخ الموضوع قبل اتخاذ الإجراء</div></div>
+    <div class="card glass" id="c4" style="right:300px;top:604px;width:670px;height:98px"><span class="ic" data-icon="bell"></span><div class="tt">متابعة المعاملات التي تنتظر الرد</div></div>
+    <div class="abs" id="banner" style="left:330px;right:330px;top:790px;height:104px;border-radius:24px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;
+      background:linear-gradient(90deg,#0d5a57,#0f6b78 50%,#174f86);border:1.5px solid rgba(227,196,126,.85);box-shadow:0 22px 50px -18px rgba(6,40,60,.6),0 0 30px rgba(47,198,220,.25) inset">
+      <div id="bn1" style="display:flex;align-items:center;gap:16px;font:700 40px 'Readex';color:#fff"><span class="ic dark" data-icon="sparkle" style="width:60px;height:60px"></span>دعم عملي للموظف</div>
+      <div id="bn2" style="display:flex;align-items:center;gap:16px;font:700 38px 'Readex';color:#f0d58f">والقرار النهائي بيد الإنسان<span class="ic" data-icon="userCheck" style="width:60px;height:60px;color:#a77d26"></span></div>
+    </div>
+  </div>
+
+  <!-- ======= S3 assistant inside the system ======= -->
+  <div class="scene" id="s3">
+    <div class="sec"><span class="n">03</span><span class="l">ظهور المساعد الذكي</span></div>
+    <div class="h2">مساعدك <span class="acc">الذكي</span> داخل بيئة العمل</div>
+    <div class="win" id="w3" style="left:330px;top:222px;width:1260px;height:690px">
+      <div class="bar"><span>نظام المراسلات</span><span class="note">واجهة تصورية مقترحة — بيانات افتراضية</span><span class="dots"><i></i><i></i><i></i></span></div>
+      <div class="side">
+        <div class="it on"><span data-icon="inbox"></span>صندوق الوارد</div>
+        <div class="it"><span data-icon="tasks"></span>مهامي</div>
+        <div class="it"><span data-icon="pen"></span>المسودات</div>
+        <div class="it"><span data-icon="send"></span>المرسلة</div>
+      </div>
+      <div class="main">
+        <div style="font:700 32px 'Readex';color:var(--ink)">طلب صيانة عاجلة لمسجد الهدى</div>
+        <div style="display:flex;gap:12px;align-items:center;margin-top:8px;font:500 18px 'Plex';color:var(--ink3)"><span style="font-family:Orbitron;font-weight:600;letter-spacing:.5px">TRX-2026-1452</span>·<span>المساجد</span>·<span class="tag r">عاجل</span></div>
+        <div style="margin-top:26px;font:700 20px 'Plex';color:#a77d26">سجل الإجراءات</div>
+        <div id="w3log" style="margin-top:12px;position:relative;padding-right:26px">
+          <div style="position:absolute;right:7px;top:14px;bottom:14px;width:2px;background:#d7e6e6"></div>
+          <div class="lg" style="display:flex;align-items:center;gap:16px;height:52px;position:relative"><i style="position:absolute;right:-25px;width:14px;height:14px;border-radius:50%;background:#13806a;box-shadow:0 0 0 4px #e3f2ef"></i><span style="font:700 21px 'Plex'">تسجيل المعاملة — ورود طلب لجنة المسجد</span><span style="margin-inline-start:auto;font:600 16px 'Orbitron';color:var(--ink3)">05/10/2026</span></div>
+          <div class="lg" style="display:flex;align-items:center;gap:16px;height:52px;position:relative"><i style="position:absolute;right:-25px;width:14px;height:14px;border-radius:50%;background:#13806a;box-shadow:0 0 0 4px #e3f2ef"></i><span style="font:700 21px 'Plex'">إحالة إلى قسم شؤون المساجد</span><span style="margin-inline-start:auto;font:600 16px 'Orbitron';color:var(--ink3)">08/10/2026</span></div>
+          <div class="lg" style="display:flex;align-items:center;gap:16px;height:52px;position:relative"><i style="position:absolute;right:-25px;width:14px;height:14px;border-radius:50%;background:#13806a;box-shadow:0 0 0 4px #e3f2ef"></i><span style="font:700 21px 'Plex'">مذكرة بنتيجة المعاينة الميدانية</span><span style="margin-inline-start:auto;font:600 16px 'Orbitron';color:var(--ink3)">14/10/2026</span></div>
+          <div class="lg" id="w3last" style="display:flex;align-items:center;gap:16px;height:52px;position:relative;border-radius:10px"><i style="position:absolute;right:-25px;width:14px;height:14px;border-radius:50%;background:#c39a3d;box-shadow:0 0 0 4px #f6ecd3"></i><span style="font:700 21px 'Plex'">ورود استفسار من لجنة المسجد</span><span style="margin-inline-start:auto;font:600 16px 'Orbitron';color:var(--ink3)">21/10/2026</span>
+            <div id="w3lastHl" style="position:absolute;inset:-4px -36px -4px -10px;border-radius:12px;border:2px solid var(--cyan);background:rgba(47,198,220,.10);opacity:0"></div></div>
+        </div>
+        <div style="margin-top:22px;font:700 20px 'Plex';color:#a77d26">المرفقات</div>
+        <div style="display:flex;gap:12px;margin-top:12px"><span class="chip"><span data-icon="doc" style="width:18px;height:18px;display:inline-flex"></span>خطاب الطلب</span><span class="chip"><span data-icon="doc" style="width:18px;height:18px;display:inline-flex"></span>صور الأضرار</span><span class="chip"><span data-icon="doc" style="width:18px;height:18px;display:inline-flex"></span>تقرير المعاينة</span></div>
+      </div>
+      <div class="abs" id="askBtn" style="left:34px;bottom:30px;display:flex;align-items:center;gap:12px;padding:14px 26px;border-radius:999px;color:#fff;font:700 24px 'Readex';
+        background:linear-gradient(90deg,#0f6f5c,#1b5fae);box-shadow:0 0 0 3px rgba(227,196,126,.85),0 14px 30px -10px rgba(6,40,60,.6)"><span data-icon="sparkle" style="width:26px;height:26px;display:inline-flex;color:#f0d58f"></span>اسأل مكتبي <b style="font-family:Orbitron">AI</b></div>
+      <div class="abs" id="askGlow" style="left:20px;bottom:16px;width:290px;height:88px;border-radius:999px;box-shadow:0 0 40px 12px rgba(47,198,220,.55);opacity:0"></div>
+      <div class="chat" id="chat3" style="left:26px;top:76px;width:470px;height:590px">
+        <div class="hd"><span class="ic dark" data-icon="sparkle" style="width:46px;height:46px"></span><div><div class="t">اسأل مكتبي <b style="font-family:Orbitron">AI</b></div><div class="s">مساعد العمل الحكومي</div></div></div>
+        <div class="ctx"><span data-icon="doc" style="display:inline-flex"></span>المعاملة المفتوحة: <b style="font-family:Orbitron;font-weight:600">TRX-2026-1452</b></div>
+        <div class="body">
+          <div class="bub u" id="q3"><span class="tx"></span></div>
+          <div class="typing" id="ty3"><i></i><i></i><i></i></div>
+          <div class="bub a" id="a3">آخر إجراء: <b>ورود استفسار من لجنة المسجد</b> بتاريخ 21/10/2026
+            <div style="margin-top:8px"><span class="chip" style="font-size:15px"><span data-icon="link" style="width:16px;height:16px;display:inline-flex"></span>المصدر: المراسلة 1452/4</span></div></div>
+          <div class="pill" id="perm3" style="position:relative;display:inline-flex;font-size:19px;padding:8px 18px;margin-top:4px"><span data-icon="shieldCheck"></span>وفق صلاحياتك المعتمدة</div>
+        </div>
+        <div class="in">اكتب سؤالك هنا...<span class="send"><span data-icon="send" style="display:inline-flex"></span></span></div>
+      </div>
+    </div>
+    <div class="cursor" id="cur3" data-icon="cursor"></div>
+    <div class="ripple" id="rip3"></div>
+  </div>
+
+  <!-- ======= S4 how it works ======= -->
+  <div class="scene" id="s4">
+    <div class="sec"><span class="n">04</span><span class="l">كيف يعمل؟</span></div>
+    <div class="h2">مثال: <span class="acc">تلخيص</span> معاملة مفتوحة</div>
+    <div class="chat" id="chat4" style="left:330px;top:222px;width:480px;height:690px">
+      <div class="hd"><span class="ic dark" data-icon="sparkle" style="width:46px;height:46px"></span><div><div class="t">اسأل مكتبي <b style="font-family:Orbitron">AI</b></div><div class="s">مساعد العمل الحكومي</div></div></div>
+      <div class="ctx"><span data-icon="doc" style="display:inline-flex"></span>المعاملة المفتوحة: <b style="font-family:Orbitron;font-weight:600">TRX-2026-1452</b></div>
+      <div class="body">
+        <div class="bub u" id="q4"><span class="tx"></span></div>
+        <div style="position:relative">
+          <div class="bub a" id="a4"><span data-icon="sparkle" style="width:18px;height:18px;display:inline-flex;color:var(--gold)"></span> جارٍ إعداد الملخص من سجل المعاملة…</div>
+          <div class="bub a" id="a4b" style="position:absolute;left:0;top:0">تم إعداد الملخص <b style="color:var(--green)">✓</b> — راجِعه في البطاقة المجاورة.</div>
+        </div>
+      </div>
+      <div class="in">اكتب سؤالك هنا...<span class="send"><span data-icon="send" style="display:inline-flex"></span></span></div>
+    </div>
+    <div class="abs glass" id="sum4" style="left:850px;top:222px;width:740px;height:600px;padding:22px 26px;border-radius:24px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><span data-icon="sparkle" style="width:28px;height:28px;display:inline-flex;color:var(--gold)"></span><span style="font:700 34px 'Readex';color:var(--green)">ملخص المعاملة</span><span style="margin-inline-start:auto;font:600 18px 'Orbitron';color:var(--ink3)">TRX-2026-1452</span></div>
+      <div class="row" id="r1"><span class="ic" data-icon="doc"></span><div><div class="lb">ملخص الموضوع</div><div class="vl">طلب صيانة سقف المصلى ومنظومة التكييف</div></div></div>
+      <div class="row" id="r2"><span class="ic" data-icon="list"></span><div><div class="lb">أهم الإجراءات السابقة</div><div class="vl">إحالة للقسم، ثم معاينة ميدانية، ثم مذكرة بالنتيجة</div></div></div>
+      <div class="row" id="r3"><span class="ic" data-icon="clock"></span><div><div class="lb">آخر إجراء مسجل</div><div class="vl">ورود استفسار من لجنة المسجد — 21/10/2026</div></div></div>
+      <div class="row" id="r4"><span class="ic" data-icon="target"></span><div><div class="lb">الإجراء التالي المقترح</div><div class="vl">الرد على الاستفسار واستكمال التقرير الفني</div></div></div>
+      <div class="row" id="r5"><span class="ic" data-icon="link"></span><div><div class="lb">الوثائق المرجعية</div><div style="display:flex;gap:10px;margin-top:4px"><span class="chip">المراسلة 1452/1</span><span class="chip">المراسلة 1452/3</span><span class="chip">المراسلة 1452/4</span></div></div></div>
+      <div class="abs" id="sumScan" style="left:0;right:0;top:0;height:120px;background:linear-gradient(180deg,rgba(47,198,220,0),rgba(47,198,220,.28),rgba(47,198,220,0));opacity:0"></div>
+    </div>
+    <div class="pill dark" id="p4a" style="left:850px;top:842px"><span data-icon="link"></span>عند توفر التكامل المعتمد</div>
+    <div class="pill" id="p4b" style="right:330px;top:842px"><span data-icon="lock"></span>ضمن ما يملك المستخدم صلاحية الاطلاع عليه</div>
+  </div>
+
+  <!-- ======= S5 uses ======= -->
+  <div class="scene" id="s5">
+    <div class="sec"><span class="n">05</span><span class="l">استخدامات عملية</span></div>
+    <div class="h2">مجالات <span class="acc">متعددة</span> داخل الوزارة</div>
+    <svg class="abs" id="hubLines" style="left:0;top:0;width:1920px;height:1080px" viewBox="0 0 1920 1080"></svg>
+    <div class="core" id="hubCore" data-core="hub" style="left:840px;top:430px;width:240px;height:240px"></div>
+    <div class="abs" id="hubLbl" style="left:760px;width:400px;top:690px;text-align:center;font:700 26px 'Readex';color:var(--ink)">مكتبي <b style="font-family:Orbitron;color:var(--gold)">AI</b></div>
+    <div class="abs" id="hubBound" style="left:770px;top:360px;width:380px;height:380px;border-radius:50%;border:2.5px dashed rgba(14,138,140,.6);opacity:0"></div>
+    <div class="card glass u" id="u1" style="right:325px;top:230px;width:400px;height:140px"><span class="ic" data-icon="mail"></span><div><div class="tt">المراسلات الإدارية</div><div class="ds">تلخيص الخطابات وإعداد مسودات الردود</div></div></div>
+    <div class="card glass u" id="u2" style="right:325px;top:440px;width:400px;height:140px"><span class="ic" data-icon="users"></span><div><div class="tt">الموارد البشرية</div><div class="ds">البحث في اللوائح والتعاميم المعتمدة ذات الصلة</div></div></div>
+    <div class="card glass u" id="u3" style="right:325px;top:650px;width:400px;height:140px"><span class="ic" data-icon="receipt"></span><div><div class="tt">الشؤون المالية</div><div class="ds">الوصول إلى المستندات والإجراءات المالية المصرح بها</div></div></div>
+    <div class="card glass u" id="u4" style="left:325px;top:230px;width:400px;height:140px"><span class="ic" data-icon="scale"></span><div><div class="tt">الشؤون القانونية</div><div class="ds">البحث في النصوص واللوائح المرجعية مع مراجعة المختص</div></div></div>
+    <div class="card glass u" id="u5" style="left:325px;top:440px;width:400px;height:140px"><span class="ic" data-icon="mosque"></span><div><div class="tt">المساجد والصيانة</div><div class="ds">تلخيص البلاغات ومتابعة أوامر العمل والمراسلات</div></div></div>
+    <div class="card glass u" id="u6" style="left:325px;top:650px;width:400px;height:140px"><span class="ic" data-icon="contract"></span><div><div class="tt">المشتريات والعقود</div><div class="ds">تنظيم المعلومات ومراجعة المستندات والإجراءات التعاقدية</div></div></div>
+    <div class="pill dark" id="p5" style="left:50%;top:830px;transform:translateX(-50%)"><span data-icon="shield"></span>النطاق وفق الأنظمة والبيانات والصلاحيات المتاحة</div>
+  </div>
+
+  <!-- ======= S6 search & follow-up ======= -->
+  <div class="scene" id="s6">
+    <div class="sec"><span class="n">06</span><span class="l">البحث والمتابعة</span></div>
+    <div class="h2">بحث <span class="acc">ذكي</span> ومتابعة أدق</div>
+    <div class="win" id="w6" style="left:330px;top:222px;width:850px;height:690px">
+      <div class="bar"><span>نظام المراسلات</span><span class="note">بيانات افتراضية</span><span class="dots"><i></i><i></i><i></i></span></div>
+      <div class="side" style="width:190px">
+        <div class="it on"><span data-icon="inbox"></span>الوارد</div>
+        <div class="it"><span data-icon="tasks"></span>مهامي</div>
+        <div class="it"><span data-icon="pen"></span>المسودات</div>
+        <div class="it"><span data-icon="send"></span>المرسلة</div>
+      </div>
+      <div class="main" style="right:190px;padding:22px 22px">
+        <div class="lrow" id="l1"><span class="mi" data-icon="mail"></span><div><div class="tt">طلب صيانة عاجلة لمسجد الهدى</div><div class="mt">TRX-2026-1452 · لجنة مسجد الهدى</div></div><div class="rt"><span class="dt">21/10/2026</span><span class="tag r">تنتظر الرد</span></div><div class="hl"></div></div>
+        <div class="lrow" id="l2"><span class="mi" data-icon="mail"></span><div><div class="tt">طلب بيانات إحصائية عن المساجد والجوامع</div><div class="mt">TRX-2026-1544 · المديرية العامة</div></div><div class="rt"><span class="dt">13/10/2026</span><span class="tag a">تحتاج متابعة</span></div><div class="hl"></div></div>
+        <div class="lrow" id="l3"><span class="mi" data-icon="mail"></span><div><div class="tt">ترشيح إمام ومؤذن لجامع النور</div><div class="mt">TRX-2026-1533 · لجنة جامع النور</div></div><div class="rt"><span class="dt">20/10/2026</span><span class="tag a">تحتاج متابعة</span></div><div class="hl"></div></div>
+        <div class="lrow" id="l4"><span class="mi" data-icon="mail"></span><div><div class="tt">تجديد عقد إيجار محل تجاري وقفي</div><div class="mt">TRX-2026-1398 · الشؤون القانونية</div></div><div class="rt"><span class="dt">06/10/2026</span><span class="tag r">تنتظر الرد</span></div><div class="hl"></div></div>
+        <div class="lrow" id="l5"><span class="mi" data-icon="mail"></span><div><div class="tt">شراء أجهزة تكييف لجامع الرحمة</div><div class="mt">TRX-2026-1510 · الشؤون المالية</div></div><div class="rt"><span class="dt">15/10/2026</span><span class="tag g">قيد الإجراء</span></div><div class="hl"></div></div>
+      </div>
+      <div class="abs" id="w6scan" style="left:0;right:190px;top:54px;height:110px;background:linear-gradient(180deg,rgba(47,198,220,0),rgba(47,198,220,.30),rgba(47,198,220,0));opacity:0"></div>
+    </div>
+    <div class="prompt glass" id="pr1" style="right:330px;top:222px"><span data-icon="search"></span><span class="tx">«اعرض المراسلات المرتبطة بهذا الموضوع.»</span></div>
+    <div class="prompt glass" id="pr2" style="right:330px;top:330px"><span data-icon="search"></span><span class="tx">«ما المعاملات التي تنتظر الرد؟»</span></div>
+    <div class="prompt glass" id="pr3" style="right:330px;top:438px"><span data-icon="search"></span><span class="tx">«ما آخر إجراء تم على المعاملة؟»</span></div>
+    <div class="prompt glass" id="pr4" style="right:330px;top:546px"><span data-icon="pen"></span><span class="tx">«جهّز مسودة رد رسمي بناءً على المستندات المعتمدة.»</span></div>
+    <div class="pill warn" id="p6" style="right:330px;top:690px;width:380px;white-space:normal;font-size:21px;border-radius:20px"><span data-icon="database"></span>دقة النتائج تعتمد على تكامل البيانات وجودتها</div>
+    <div class="draft" id="draft" style="left:440px;top:236px;width:600px;height:676px;padding:46px 46px">
+      <div class="wm">مسودة</div>
+      <div class="ttl">مسودة رد رسمي</div>
+      <div class="sub">الموضوع: طلب صيانة عاجلة لمسجد الهدى</div>
+      <div style="height:34px"></div>
+      <div class="ln"></div><div class="ln" style="width:92%"></div><div class="ln" style="width:70%"></div><div style="height:16px"></div>
+      <div class="ln"></div><div class="ln" style="width:88%"></div><div class="ln" style="width:95%"></div><div class="ln" style="width:60%"></div><div style="height:16px"></div>
+      <div class="ln" style="width:80%"></div><div class="ln" style="width:45%"></div>
+    </div>
+    <div class="stamp" id="stamp" style="left:500px;top:640px"><span data-icon="userCheck"></span>مراجعة واعتماد<br>الموظف المختص</div>
+  </div>
+
+  <!-- ======= S6b smart notifications ======= -->
+  <div class="scene" id="s6b">
+    <div class="sec"><span class="n">06</span><span class="l">البحث والمتابعة</span></div>
+    <div class="h2">تنبيهات <span class="acc">ذكية</span> على سطح المكتب</div>
+    <div class="desk" id="desk" style="left:410px;top:222px;width:1100px;height:690px">
+      <svg class="abs" style="inset:0;width:100%;height:100%;opacity:.16" viewBox="0 0 1100 690"><defs><pattern id="hexd" width="56" height="48.5" patternUnits="userSpaceOnUse"><path d="M14 0h28l14 24.25-14 24.25H14L0 24.25z" fill="none" stroke="#9ff" stroke-width="1"/></pattern></defs><rect width="1100" height="690" fill="url(#hexd)"/></svg>
+      <div class="core" data-core="ghost" style="left:400px;top:150px;width:300px;height:300px;opacity:.22"></div>
+      <div class="dicons">
+        <div class="di"><div class="b gold"><span data-icon="sparkle" style="display:inline-flex"></span></div>مكتبي AI</div>
+        <div class="di"><div class="b"><span data-icon="mail" style="display:inline-flex"></span></div>نظام المراسلات</div>
+        <div class="di"><div class="b" style="color:#c39a3d"><span data-icon="folder" style="display:inline-flex"></span></div>المستندات</div>
+        <div class="di"><div class="b" style="color:#5d7d8a"><span data-icon="trash" style="display:inline-flex"></span></div>سلة المحذوفات</div>
+      </div>
+      <div class="widget" id="widget" style="left:30px;top:30px">
+        <div class="wh"><span data-icon="pin" style="display:inline-flex"></span>تحتاج إلى إجراء اليوم<span class="live"><i></i><span id="liveTx">تحديث مباشر</span></span></div>
+        <div class="wr"><i style="background:#e04848"></i>طلب صيانة عاجلة لمسجد الهدى<span>اليوم</span></div>
+        <div class="wr"><i style="background:#e0a03a"></i>تجديد عقد إيجار محل تجاري وقفي<span>خلال يومين</span></div>
+        <div class="wr"><i style="background:#27a86a"></i>ترشيح إمام ومؤذن لجامع النور<span>للاعتماد</span></div>
+      </div>
+      <div class="npanel" id="npanel" style="left:22px;bottom:78px">
+        <div class="nh"><span data-icon="bell" style="display:inline-flex"></span>مكتبي <b style="font-family:Orbitron;margin:0 4px">AI</b> · تنبيهات <span class="tag r" style="padding:1px 10px;font-family:Orbitron">3</span><span class="sm"><span data-icon="sort" style="width:16px;height:16px;display:inline-flex"></span>مرتبة حسب الأولوية</span></div>
+        <div class="items">
+          <div class="nitem" id="n1"><i class="st" style="background:#e04848"></i><div><div class="tt">طلب صيانة عاجلة لمسجد الهدى</div><div class="mt">TRX-2026-1452 · لجنة مسجد الهدى</div><div class="ac">الإجراء المطلوب: الرد على استفسار لجنة المسجد</div></div><span class="tag r tg">عاجل · اليوم</span></div>
+          <div class="nitem" id="n2"><i class="st" style="background:#e0a03a"></i><div><div class="tt">تجديد عقد إيجار محل تجاري وقفي</div><div class="mt">TRX-2026-1398 · الشؤون القانونية</div></div><span class="tag a tg">خلال يومين</span></div>
+          <div class="nitem" id="n3"><i class="st" style="background:#27a86a"></i><div><div class="tt">ترشيح إمام ومؤذن لجامع النور</div><div class="mt">TRX-2026-1533 · لجنة جامع النور</div></div><span class="tag g tg">بانتظار الاعتماد</span></div>
+          <div class="abs" id="sortFx" style="left:0;right:0;top:0;bottom:0;background:linear-gradient(180deg,rgba(47,198,220,0),rgba(47,198,220,.25),rgba(47,198,220,0));opacity:0"></div>
+        </div>
+        <div class="nb"><div class="btn p">فتح في مكتبي AI</div><div class="btn o" id="pinBtn">تثبيت على سطح المكتب</div></div>
+      </div>
+      <div class="task">
+        <div class="bell" id="bell"><span data-icon="bell" style="display:inline-flex" id="bellIc"></span><span class="badge" id="badge">1</span></div>
+        <div class="clock">10:24 ص<br><span style="font-size:13px;opacity:.8">01/11/2026</span></div>
+        <div class="apps"><span data-icon="folder"></span><span data-icon="mail"></span><span data-icon="sparkle"></span><span data-icon="grid"></span></div>
+      </div>
+      <div class="abs" id="bellRing" style="left:16px;bottom:6px;width:52px;height:52px;border-radius:50%;border:3px solid #f0d58f;opacity:0"></div>
+    </div>
+    <div class="cursor" id="cur6" data-icon="cursor"></div>
+    <div class="ripple" id="rip6"></div>
+  </div>
+
+  <!-- ======= S7 security ======= -->
+  <div class="scene" id="s7">
+    <div class="sec"><span class="n">07</span><span class="l">أمن المعلومات والحوكمة</span></div>
+    <div class="h2"><span class="gold">أمن المعلومات</span> شرط أساسي لنجاح المشروع</div>
+    <div class="zone" id="zone" style="left:610px;top:232px;width:980px;height:600px">
+      <svg viewBox="0 0 980 600"><rect id="zoneRect" x="2" y="2" width="976" height="596" rx="28" fill="rgba(255,255,255,.35)" stroke="#0e8a8c" stroke-width="2.5" stroke-dasharray="12 9"/></svg>
+      <div class="pill" id="zoneLbl" style="right:30px;top:-24px;font-size:19px;padding:7px 18px"><span data-icon="building"></span>بيئة حكومية محمية</div>
+    </div>
+    <svg class="abs" id="secLines" style="left:0;top:0;width:1920px;height:1080px" viewBox="0 0 1920 1080"></svg>
+    <div class="abs" id="lockG" style="left:745px;top:405px;width:250px;height:250px">
+      <div class="abs" data-ring="dash" style="inset:-60px" id="lr1"></div>
+      <div class="abs" data-ring="ticks" style="inset:-24px" id="lr2"></div>
+      <div class="abs" style="inset:0;border-radius:50%;background:radial-gradient(circle,rgba(227,196,126,.35),rgba(47,198,220,.12) 55%,rgba(255,255,255,0) 72%)"></div>
+      <div class="abs" data-icon="lockBig" style="left:50%;top:50%;width:150px;height:150px;transform:translate(-50%,-50%)"></div>
+    </div>
+    <div class="pill" id="appr" style="left:640px;top:262px;font-size:22px;padding:9px 20px"><span data-icon="check" style="color:var(--green)"></span>موافقة الجهات المختصة</div>
+    <div class="card glass" id="g1" style="left:1190px;top:300px;width:370px;height:96px"><span class="ic" data-icon="key"></span><div class="tt" style="font-size:25px">صلاحيات وصول محددة</div></div>
+    <div class="card glass" id="g2" style="left:1190px;top:482px;width:370px;height:96px"><span class="ic" data-icon="shield"></span><div class="tt" style="font-size:25px">حماية البيانات الحكومية</div></div>
+    <div class="card glass" id="g3" style="left:1190px;top:664px;width:370px;height:96px"><span class="ic" data-icon="list"></span><div class="tt" style="font-size:25px">سجل للتدقيق والمراجعة</div></div>
+    <div class="abs" id="cloud" style="left:330px;top:420px;width:200px;text-align:center">
+      <div style="width:150px;height:150px;margin:0 auto;border-radius:50%;border:2px dashed #8aa3ad;display:flex;align-items:center;justify-content:center;color:#7b97a3;background:rgba(255,255,255,.4)"><span data-icon="cloud" style="width:80px;height:80px;display:inline-flex"></span></div>
+      <div style="margin-top:12px;font:600 21px/1.35 'Plex';color:var(--ink3)">خدمات خارجية<br>غير معتمدة</div>
+    </div>
+    <div class="abs" id="packet" style="left:840px;top:520px;width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#2fc6dc,#1b5fae);box-shadow:0 0 18px 4px rgba(47,198,220,.7);opacity:0"></div>
+    <div class="abs" id="xMark" style="left:583px;top:503px;width:58px;height:58px;border-radius:50%;background:#d24d4d;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 6px rgba(210,77,77,.25),0 10px 20px rgba(120,20,20,.35)"><span data-icon="x" style="width:30px;height:30px;display:inline-flex"></span></div>
+    <div class="pill warn" id="p7" style="left:50%;top:852px;transform:translateX(-50%)"><span data-icon="block"></span>عدم إرسال بيانات الوزارة إلى خدمات خارجية غير معتمدة</div>
+    <div class="pill dark" id="human" style="left:735px;top:710px;font-size:22px"><span data-icon="userCheck"></span>مراجعة واعتماد بشري</div>
+  </div>
+
+  <!-- ======= S8 plan ======= -->
+  <div class="scene" id="s8">
+    <div class="sec"><span class="n">08</span><span class="l">خطة التنفيذ المقترحة</span></div>
+    <div class="h2">تنفيذ <span class="acc">تدريجي</span> ومدروس</div>
+    <svg class="abs" id="track" style="left:0;top:0;width:1920px;height:1080px" viewBox="0 0 1920 1080">
+      <defs><linearGradient id="trg" x1="1" x2="0"><stop offset="0" stop-color="#13806a"/><stop offset=".5" stop-color="#0e8a8c"/><stop offset="1" stop-color="#1b5fae"/></linearGradient></defs>
+      <line x1="1540" y1="545" x2="400" y2="545" stroke="rgba(14,138,140,.35)" stroke-width="4" stroke-dasharray="10 10"/>
+      <line id="trackFill" x1="1540" y1="545" x2="400" y2="545" stroke="url(#trg)" stroke-width="6" stroke-linecap="round"/>
+    </svg>
+    <div class="node" id="nd1" style="left:1460px;top:545px"><div class="fill"></div><span>1</span></div>
+    <div class="node" id="nd2" style="left:1120px;top:545px"><div class="fill"></div><span>2</span></div>
+    <div class="node" id="nd3" style="left:790px;top:545px"><div class="fill"></div><span>3</span></div>
+    <div class="node" id="nd4" style="left:460px;top:545px"><div class="fill"></div><span>4</span></div>
+    <div class="step glass" id="st1" style="left:1295px;top:300px"><div class="tt">دراسة المتطلبات</div><div class="ds">الفنية والأمنية والجدوى</div></div>
+    <div class="step glass" id="st2" style="left:955px;top:640px"><div class="tt">تصميم نموذج تجريبي</div><div class="ds">ببيانات وهمية</div></div>
+    <div class="step glass" id="st3" style="left:625px;top:300px"><div class="tt">تجربة محدودة</div><div class="ds">بعد الحصول على الموافقات اللازمة</div></div>
+    <div class="step glass" id="st4" style="left:310px;top:640px;width:300px"><div class="tt">تقييم النتائج</div><div class="ds">قبل قرار التوسع</div></div>
+    <div class="abs" id="evalRow" style="left:0;right:0;top:830px;display:flex;justify-content:center;gap:18px;align-items:center">
+      <div class="pill" style="position:relative" id="ev1"><span data-icon="target"></span>الدقة</div>
+      <div class="pill" style="position:relative" id="ev2"><span data-icon="shield"></span>الأمان</div>
+      <div class="pill" style="position:relative" id="ev3"><span data-icon="chart"></span>الفائدة العملية</div>
+      <div style="font:700 34px 'Readex';color:var(--gold);padding:0 6px" id="evArr">←</div>
+      <div class="pill dark" style="position:relative" id="ev4"><span data-icon="flag"></span>قرار بشأن التوسع</div>
+    </div>
+  </div>
+
+  <!-- ======= S9 KPIs ======= -->
+  <div class="scene" id="s9">
+    <div class="sec"><span class="n">09</span><span class="l">قياس الأثر</span></div>
+    <div class="h2"><span class="acc">مؤشرات</span> قياس التجربة</div>
+    <div class="kpi glass" id="k1" style="right:330px;top:225px"><div class="top"><span class="ic" data-icon="clock"></span><div class="tt">متوسط وقت الوصول<br>إلى المعلومة</div></div><div class="viz" data-viz="bars2"></div><div class="ft">يُقاس خلال التجربة</div></div>
+    <div class="kpi glass" id="k2" style="right:765px;top:225px"><div class="top"><span class="ic" data-icon="pen"></span><div class="tt">جودة المسودات<br>وزمن إعدادها</div></div><div class="viz" data-viz="bars"></div><div class="ft">يُقاس خلال التجربة</div></div>
+    <div class="kpi glass" id="k3" style="right:1200px;top:225px"><div class="top"><span class="ic" data-icon="target"></span><div class="tt">دقة الإجابات<br>المستندة إلى المصادر</div></div><div class="viz" data-viz="ring"></div><div class="ft">يُقاس خلال التجربة</div></div>
+    <div class="kpi glass" id="k4" style="right:982px;top:505px"><div class="top"><span class="ic" data-icon="users"></span><div class="tt">رضا الموظفين<br>المشاركين</div></div><div class="viz" data-viz="dots"></div><div class="ft">يُقاس خلال التجربة</div></div>
+    <div class="kpi glass" id="k5" style="right:547px;top:505px"><div class="top"><span class="ic" data-icon="shieldCheck"></span><div class="tt">الالتزام بضوابط<br>الأمن والصلاحيات</div></div><div class="viz" data-viz="checks"></div><div class="ft">يُقاس خلال التجربة</div></div>
+    <div class="abs" id="phs"></div>
+    <div class="pill dark" id="p9" style="left:50%;top:800px;transform:translateX(-50%);font-size:28px;padding:14px 34px"><span data-icon="check"></span>قرار مبني على نتائج فعلية<span id="p9b" style="color:#f0d58f;margin-inline-start:6px">— لا على توقعات غير مختبرة</span></div>
+  </div>
+
+  <!-- ======= S10 closing ======= -->
+  <div class="scene" id="s10">
+    <div class="sec"><span class="n">✦</span><span class="l">الخلاصة</span></div>
+    <div class="h2">أكثر من <span class="acc">أداة للإجابة</span> عن الأسئلة</div>
+    <svg class="abs" id="clLines" style="left:0;top:0;width:1920px;height:1080px" viewBox="0 0 1920 1080"></svg>
+    <div class="core" id="clCore" data-core="hub" style="left:830px;top:400px;width:260px;height:260px"></div>
+    <div class="abs glass" id="qa" style="left:760px;top:410px;width:400px;padding:18px 22px;border-radius:22px">
+      <div class="bub u" style="font-size:19px;margin-bottom:10px">سؤال؟</div>
+      <div class="bub a" style="font-size:19px;margin:0">إجابة.</div>
+    </div>
+    <div class="card glass" id="cn1" style="left:1270px;top:330px;width:330px;height:120px"><span class="ic dark" data-icon="database"></span><div class="tt" style="font-size:27px">المعرفة المؤسسية</div></div>
+    <div class="card glass" id="cn2" style="left:320px;top:330px;width:330px;height:120px"><span class="ic dark" data-icon="users"></span><div class="tt" style="font-size:27px">دعم الموظفين</div></div>
+    <div class="card glass" id="cn3" style="left:795px;top:735px;width:330px;height:120px"><span class="ic dark" data-icon="flow"></span><div class="tt" style="font-size:27px">متابعة المعاملات</div></div>
+  </div>
+
+  <!-- ======= S11 final ======= -->
+  <div class="scene" id="s11">
+    <div class="core" id="fCore" data-core="big" style="left:855px;top:96px;width:210px;height:210px"></div>
+    <div class="abs" style="top:318px;left:0;right:0;text-align:center;font:700 128px/1.2 'Readex';color:var(--ink)" id="fMain">مكتبي&nbsp;<span style="font:900 116px 'Orbitron';background:linear-gradient(180deg,#f0d58f,#c39a3d 55%,#9c7220);-webkit-background-clip:text;color:transparent">AI</span></div>
+    <div class="abs" id="fSub" style="top:500px;left:0;right:0;text-align:center;font:600 42px 'Readex';color:var(--ink2)">خطوة مقترحة نحو عمل حكومي <span class="acc">أكثر ذكاءً وكفاءة</span></div>
+    <div class="abs glass" id="fAsk" style="left:360px;right:360px;top:600px;height:104px;display:flex;align-items:center;justify-content:center;gap:16px;border-radius:26px;border:2px solid rgba(195,154,61,.7);font:700 36px 'Readex'">
+      <span class="gold">المطلوب:</span><span style="color:var(--ink)">الموافقة على دراسة الفكرة وتقييم جدوى النموذج التجريبي.</span></div>
+    <div class="abs" id="fSteps" style="left:0;right:0;top:760px;display:flex;justify-content:center;align-items:center;gap:16px">
+      <div class="pill" style="position:relative" id="fs1"><span data-icon="search"></span>دراسة الفكرة</div>
+      <div style="font:700 30px 'Readex';color:var(--gold)" class="fa" id="fa1">←</div>
+      <div class="pill" style="position:relative" id="fs2"><span data-icon="chart"></span>تقييم الجدوى</div>
+      <div style="font:700 30px 'Readex';color:var(--gold)" class="fa" id="fa2">←</div>
+      <div class="pill" style="position:relative" id="fs3"><span data-icon="shieldCheck"></span>نموذج تجريبي آمن</div>
+      <div style="font:700 30px 'Readex';color:var(--gold)" class="fa" id="fa3">←</div>
+      <div class="pill dark" style="position:relative" id="fs4"><span data-icon="flag"></span>القرار المناسب</div>
+    </div>
+  </div>
+
+  <!-- ======= S12 credits ======= -->
+  <div class="scene" id="s12">
+    <div class="abs" id="crMedal" style="left:860px;top:150px;width:200px;height:200px">
+      <div class="abs" data-ring="dash" style="inset:-34px" id="crRing"></div>
+      <div class="abs" style="inset:0;border-radius:50%;background:radial-gradient(circle at 50% 40%,#13705e,#0a4140 70%,#082f35);box-shadow:0 0 0 4px rgba(227,196,126,.85),0 0 0 9px rgba(255,255,255,.6),0 24px 50px -18px rgba(4,40,50,.6),0 0 60px 8px rgba(47,198,220,.25)"></div>
+      <img src="assets/emblem-gold.png" class="abs" style="left:50%;top:50%;width:136px;transform:translate(-50%,-50%)">
+    </div>
+    <div class="abs cr-line" id="cr1" style="top:430px;left:0;right:0;font:700 36px 'Readex';letter-spacing:1px"><span class="gold">إعداد العمل</span></div>
+    <div class="abs" id="cr2" style="top:500px;left:0;right:0;text-align:center;font:600 50px 'Readex';color:var(--ink2)">فريق عمل الدكتور</div>
+    <div class="abs" id="cr3" style="top:572px;left:0;right:0;text-align:center;font:700 92px/1.3 'Readex'"><span class="acc">أحمد بن علي الشعيبي</span></div>
+    <div class="abs" id="cr4" style="top:742px;left:0;right:0;text-align:center;font:600 26px 'Plex';color:var(--ink3)">مكتبي <b style="font-family:Orbitron;color:var(--gold)">AI</b> · عرض مقترح لوزارة الأوقاف والشؤون الدينية</div>
+  </div>
+
+  <div id="cap"></div>
+  <div id="flash"></div>
+  <div id="veil"></div>
+</div>
+<script src="vendor/gsap.min.js"></script>
+<script src="build/data.js"></script>
+<script src="scene.js"></script>
+</body>
+</html>
