@@ -3,3 +3,5 @@ build/parts.txt
 build/stills/
 build/soundtrack.wav
 build/render.log
+build/*-conv.wav
+build/verify.json
