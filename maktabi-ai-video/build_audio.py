@@ -87,8 +87,10 @@ def main():
               "equalizer=f=320:t=q:w=1.1:g=-2.5,equalizer=f=2100:t=q:w=0.9:g=5,"
               "equalizer=f=6500:t=q:w=1.2:g=2,lowpass=f=10000:poles=2,"
               "acompressor=threshold=-26dB:ratio=2.5:attack=6:release=90")
-    v1 = decode(A("assets", "voice-intro.m4a"), 1, vchain)[:, 0]
-    v2 = decode(A("assets", "voice-2m12.m4a"), 1, vchain)[:, 0]
+    # voice-matched versions from prep_voices.py when available (same timing as the originals)
+    vsrc = lambda n: A("build", n + "-conv.wav") if os.path.exists(A("build", n + "-conv.wav")) else A("assets", n + ".m4a")
+    v1 = decode(vsrc("voice-intro"), 1, vchain)[:, 0]
+    v2 = decode(vsrc("voice-2m12"), 1, vchain)[:, 0]
 
     # Loudness: original narration ≈ -19.7 dBFS RMS (voice only, during speech).
     target = -19.7
