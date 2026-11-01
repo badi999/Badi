@@ -64,6 +64,6 @@ async function renderRange(idx, f0, f1) {
   const name = opt('out') || 'maktabi-ai.mp4';
   fs.mkdirSync(path.join(ROOT, 'output'), { recursive: true });
   execFileSync('ffmpeg', ['-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', B('parts.txt'), '-ss', String(from), '-t', String(to - from), '-i', B('soundtrack.wav'),
-    '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-shortest', path.join(ROOT, 'output', name)], { stdio: 'inherit' });
+    '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-af', 'volume=-1dB,alimiter=limit=0.79:attack=2:release=60:level=disabled', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-shortest', path.join(ROOT, 'output', name)], { stdio: 'inherit' });
   console.log('done ->', path.join(ROOT, 'output', name));
 })();
