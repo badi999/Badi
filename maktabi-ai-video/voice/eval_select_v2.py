@@ -3,8 +3,9 @@ narrator, pitch and speaking pace vs the narrator; keep the best take per senten
 import json, sys, re, wave, os, numpy as np, scipy.signal as ss, parselmouth
 from faster_whisper import WhisperModel
 D, P, STEM = sys.argv[1], sys.argv[2], sys.argv[3]
+ONLY = sys.argv[4].split(",") if len(sys.argv) > 4 else None   # re-select only these sentences
 REF = {"A": "في ظل الثورة الرقمية للذكاء الاصطناعي", "BC": "نقدم لكم عرضا مقترحا في مجال الذكاء الاصطناعي لوزارة الأوقاف والشؤون الدينية",
-       "S1": "ويمكن للمساعد تنبيه الموظف عبر جرس إشعارات على شريط المهام", "S2": "يعرض الرسائل والمعاملات التي تحتاج إلى إجراء مرتبة حسب الأولوية",
+       "S1": "ويمكن للمساعد تنبيه الموظف عبر جرس إشعارات على شريط المهام", "S2": "يعرض الرسائل والمعاملات التي تحتاج إلى إجراء منظمة حسب الأولوية",
        "S3": "مع إبرازها على سطح المكتب لمتابعتها أولا بأول"}
 def norm(s):
     s = re.sub(r'[ً-ْٰـ]', '', s)
@@ -54,7 +55,13 @@ for g in gen:
 json.dump({"narrator": {"f0": nf0, "pace": pace_n}, "cands": cands}, open(f"{D}/eval_v2.json", "w"), ensure_ascii=False, indent=1)
 os.makedirs(f"{P}/assets/voice-gen", exist_ok=True)
 out = {"intro": [], "gap": [], "intro_pauses": [0.5]}
+prev = json.load(open(f"{P}/build/voices.json")) if ONLY else None
 for k in ["A", "BC", "S1", "S2", "S3"]:
+    if ONLY and k not in ONLY:
+        pe = [x for x in prev["intro"] + prev["gap"] if x["file"].endswith(f"/{k}.wav")][0]
+        (out["intro"] if k in ("A", "BC") else out["gap"]).append(pe)
+        if k == "S2" and "sort_word" in prev: out["sort_word"] = prev["sort_word"]
+        continue
     cs = sorted([c for c in cands if c["key"] == k], key=lambda c: (c["wer"] > 0, -c["score"]))
     b = cs[0]
     a, sr = load(f"{D}/{b['name']}.wav"); a = trim(a, sr)
@@ -66,7 +73,7 @@ for k in ["A", "BC", "S1", "S2", "S3"]:
     if k in ("BC", "S2"):
         a16 = ss.resample_poly(a, 16000, sr).astype(np.float32)
         ws = [(norm(x.word)[0] if norm(x.word) else "", x.start) for s in m.transcribe(a16, language="ar", word_timestamps=True)[0] for x in s.words]
-        key = ("لوزار", "وزار") if k == "BC" else ("مرتب",)
+        key = ("لوزار", "وزار") if k == "BC" else ("منظم",)
         hit = [t for wd, t in ws if wd.startswith(key)]
         if k == "BC": e["split"] = round(max(.5, (hit[0] if hit else len(a) / sr * .6) - .05), 3)
         else: out["sort_word"] = round((hit[0] if hit else len(a) / sr * .62) / (len(a) / sr), 3)

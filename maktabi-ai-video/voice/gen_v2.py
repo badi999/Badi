@@ -5,11 +5,13 @@ torch.set_num_threads(4)
 from chatterbox.mtl_tts import ChatterboxMultilingualTTS
 from chatterbox.vc import ChatterboxVC
 REF, STEM, OUT = sys.argv[1], sys.argv[2], sys.argv[3]
+ONLY = sys.argv[4].split(",") if len(sys.argv) > 4 else None      # e.g. "S2"
+SEEDS = (5, 17, 29, 41) if ONLY else (5, 17, 29)
 T = {
  "A":  ["في ظل الثورة الرقمية للذكاء الاصطناعي،", "في ظِلِّ الثَّورةِ الرَّقميَّةِ للذَّكاءِ الاصطناعيِّ،"],
  "BC": ["نقدم لكم عرضًا مقترحًا في مجال الذكاء الاصطناعي لوزارة الأوقاف والشؤون الدينية.", "نُقدِّمُ لكم عرضًا مُقترَحًا في مجالِ الذَّكاءِ الاصطناعيِّ لوزارةِ الأوقافِ والشُّؤونِ الدِّينيَّة."],
  "S1": ["ويمكن للمساعد تنبيه الموظف عبر جرس إشعارات على شريط المهام.", "ويُمكنُ للمُساعِدِ تنبيهُ المُوظَّفِ عبرَ جرسِ إشعاراتٍ على شريطِ المهامّ."],
- "S2": ["يعرض الرسائل والمعاملات التي تحتاج إلى إجراء مرتبةً حسب الأولوية،", "يَعرِضُ الرَّسائلَ والمُعاملاتِ التي تحتاجُ إلى إجراءٍ مُرتَّبةً حسبَ الأولويَّة،"],
+ "S2": ["يعرض الرسائل والمعاملات التي تحتاج إلى إجراء منظمةً حسب الأولوية،", "يَعرِضُ الرَّسائلَ والمُعاملاتِ التي تحتاجُ إلى إجراءٍ مُنظَّمةً حسبَ الأولويَّة،"],
  "S3": ["مع إبرازها على سطح المكتب لمتابعتها أولًا بأول.", "مع إبرازِها على سطحِ المكتبِ لمُتابعتِها أوَّلًا بأوَّل."],
 }
 m = ChatterboxMultilingualTTS.from_pretrained(device="cpu")
@@ -21,8 +23,9 @@ self_ref = [sim(emb_wav(librosa.load(STEM, sr=16000, offset=s, duration=d)[0])) 
 print("narrator self-similarity (ceiling):", [round(x, 3) for x in self_ref], flush=True)
 res = []
 for key, variants in T.items():
+    if ONLY and key not in ONLY: continue
     for vi, text in enumerate(variants):
-        for seed in (5, 17, 29):
+        for seed in SEEDS:
             torch.manual_seed(seed); t = time.time()
             wav = m.generate(text, language_id="ar", audio_prompt_path=REF, exaggeration=0.5, cfg_weight=0.5, temperature=0.7)
             name = f"{key}_v{vi}_s{seed}"; p = f"{OUT}/{name}.wav"; torchaudio.save(p, wav, m.sr)
