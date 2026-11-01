@@ -138,6 +138,12 @@ def main():
         orig = decode(A("build", "narration-vocals.wav"), 2,
                       "highpass=f=75:poles=2,equalizer=f=109.7:t=q:w=12:g=-14,equalizer=f=219.4:t=q:w=12:g=-12,"
                       "equalizer=f=165.5:t=q:w=12:g=-8,agate=threshold=0.008:ratio=6:attack=4:release=180:range=0.004")
+        # keep only the narrator's speaking spans (orig time); anything else in the stem is music residue
+        keep = np.zeros(len(orig))
+        for a, b in [(10.9, 130.3), (142.1, 237.45)]:
+            i, j = int(a * SR), int(b * SR); keep[i:j] = 1
+            k = int(.05 * SR); keep[i:i + k] = np.linspace(0, 1, k); keep[j - k:j] = np.linspace(1, 0, k)
+        orig = orig * keep[:, None]
     else:
         orig = decode(A("assets", "original-audio.m4a"), 2)
     target = rms_db(sl(orig.mean(1), 17, 40)) if NO_MUSIC else -19.7  # narration loudness during speech
