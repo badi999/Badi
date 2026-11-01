@@ -10,7 +10,7 @@
 
 Writes build/soundtrack.wav and build/timeline.json (time mapping used by scene.html).
 """
-import json, os, subprocess, wave
+import json, os, subprocess, sys, wave
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -89,9 +89,58 @@ def load_clip(path, vchain=None):
     return x[a:b]
 
 
+NO_MUSIC = "--with-music" not in sys.argv and os.path.exists(A("build", "narration-vocals.wav"))
+
+
+def ltas(x, n=4096):
+    """Long-term average spectrum (power) of the louder (speech) frames."""
+    fr = [x[i:i + n] for i in range(0, len(x) - n, n // 2)]
+    e = np.array([np.mean(f ** 2) for f in fr]); thr = np.percentile(e, 40)
+    acc = sum(np.abs(np.fft.rfft(f * np.hanning(n))) ** 2 for f, ee in zip(fr, e) if ee > thr)
+    return acc
+
+
+def eq_match(clips, ref, n=4096, lim=8.0):
+    """Linear-phase EQ that moves the generated clips' average spectrum onto the narrator's."""
+    f = np.fft.rfftfreq(n, 1 / SR)
+    g = 10 * np.log10(ltas(ref, n) + 1e-12) - 10 * np.log10(ltas(np.concatenate(clips), n) + 1e-12)
+    # smooth in 1/3-octave bands, keep 90 Hz–11 kHz, limit the correction
+    sm = np.zeros_like(g)
+    for i, fi in enumerate(f):
+        if fi < 20: continue
+        band = (f > fi / 2 ** (1 / 6)) & (f < fi * 2 ** (1 / 6))
+        sm[i] = np.mean(g[band])
+    ref_lvl = np.mean(sm[(f > 500) & (f < 2000)])
+    sm = np.clip(sm - ref_lvl, -lim, lim)
+    sm[f < 90] = sm[np.argmin(abs(f - 90))]; sm[f > 11000] = sm[np.argmin(abs(f - 11000))]
+    h = np.fft.irfft(10 ** (sm / 20), n); h = np.roll(h, n // 2) * np.hanning(n)
+    out = []
+    for c in clips:
+        y = np.convolve(c, h)[n // 2:n // 2 + len(c)]
+        out.append(y)
+    return out
+
+
+def chime(t_offsets):
+    """Clean notification 'ding' x3 (replaces the one that was mixed into the music)."""
+    L = int((max(t_offsets) + 1.6) * SR); y = np.zeros(L); tt = np.arange(int(1.4 * SR)) / SR
+    parts = [(2093, 1.0, .42), (2489, .8, .38), (3400, .32, .25), (4300, .22, .2), (4800, .18, .18), (6050, .1, .12)]
+    d = sum(a * np.sin(2 * np.pi * fr * tt) * np.exp(-tt / tau) for fr, a, tau in parts)
+    d *= np.minimum(1, tt / .003)
+    for o in t_offsets:
+        i = int(o * SR); y[i:i + len(d)] += d
+    return y / np.abs(y).max() * 10 ** (-17 / 20)
+
+
 def main():
-    orig = decode(A("assets", "original-audio.m4a"), 2)
-    target = -19.7  # original narration ≈ -19.7 dBFS RMS (voice only, during speech)
+    if NO_MUSIC:
+        # narration only: vocals stem from voice/separate_full.py, residual drone notched, pauses gated
+        orig = decode(A("build", "narration-vocals.wav"), 2,
+                      "highpass=f=75:poles=2,equalizer=f=109.7:t=q:w=12:g=-14,equalizer=f=219.4:t=q:w=12:g=-12,"
+                      "equalizer=f=165.5:t=q:w=12:g=-8,agate=threshold=0.008:ratio=6:attack=4:release=180:range=0.004")
+    else:
+        orig = decode(A("assets", "original-audio.m4a"), 2)
+    target = rms_db(sl(orig.mean(1), 17, 40)) if NO_MUSIC else -19.7  # narration loudness during speech
     gen = os.path.exists(A("build", "voices.json"))
     if gen:
         # Generated narration (same voice as the original narrator): one clip per sentence.
@@ -100,6 +149,11 @@ def main():
         lc = lambda c: decode(A(c["file"]), 1, gchain)[:, 0] if c.get("trimmed") else load_clip(A(c["file"]), gchain)
         intro = [lc(c) for c in vj["intro"]]
         gap = [lc(c) for c in vj["gap"]]
+        if NO_MUSIC:
+            narr = orig.mean(1)
+            ref = np.concatenate([sl(narr, a, b) for a, b in [(14, 41), (41.7, 62), (62.3, 85.6), (142.4, 190)]])
+            eqd = eq_match(intro + gap, ref)
+            intro, gap = eqd[:len(intro)], eqd[len(intro):]
         allv = np.concatenate(intro + gap)
         g = 10 ** ((target - rms_db(allv)) / 20)
         intro = [c * g for c in intro]; gap = [c * g for c in gap]
@@ -211,6 +265,9 @@ def main():
         r = v1_new - 0.95
         intro_spans = [[r + 1.1, r + 3.9], [r + 4.9, r + 8.46], [r + 8.46, r + 11.2]]
 
+    if NO_MUSIC:
+        c = chime([0.0, 0.70, 1.35]); i = int(round((chime_new - 0.01) * SR))
+        mix[i:i + len(c)] += np.repeat(c[:len(mix) - i, None], 2, axis=1)
     peak = np.abs(mix).max()
     if peak > 0.98:
         mix *= 0.98 / peak
@@ -229,6 +286,7 @@ def main():
         "gap": spans,
         "sortT": sortT,
         "generated": gen,
+        "no_music": NO_MUSIC,
         "marks": tr.marks,
     }
     json.dump(tl, open(A("build", "timeline.json"), "w"), indent=1)

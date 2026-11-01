@@ -5,3 +5,4 @@ build/soundtrack.wav
 build/render.log
 build/*-conv.wav
 build/verify.json
+build/narration-vocals.wav
